@@ -366,21 +366,18 @@ class TwilioMakeTwiMLSayAndRecord(Component):
     - twiml: Generated TwiML XML string
     """
     message: InCompArg[str]
-    max_length: InCompArg[int]
+    max_length: InArg[int]
     timeout: InArg[int]
     transcribe: InArg[bool]
     transcribe_callback: InArg[str]
-    action_url: InCompArg[str]
+    action_url: InArg[str]
     twiml: OutArg[str]
 
     def execute(self, ctx) -> None:
         response = VoiceResponse()
         response.say(self.message.value)
         
-        record_kwargs = {
-            'maxLength': self.max_length.value,
-            'action': self.action_url.value
-        }
+        record_kwargs = {}
         
         if self.timeout.value:
             record_kwargs['timeout'] = self.timeout.value
@@ -388,6 +385,10 @@ class TwilioMakeTwiMLSayAndRecord(Component):
             record_kwargs['transcribe'] = True
         if self.transcribe_callback.value:
             record_kwargs['transcribeCallback'] = self.transcribe_callback.value
+        if self.max_length.value:
+            record_kwargs['maxLength'] = self.max_length.value
+        if self.action_url.value:
+            record_kwargs['action'] = self.action_url.value
             
         response.record(**record_kwargs)
         self.twiml.value = str(response)
