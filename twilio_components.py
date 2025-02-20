@@ -349,3 +349,45 @@ class TwilioMakeTwiMLMessage(Component):
         if self.media_url.value:
             msg.media(self.media_url.value)
         self.twiml.value = str(response)
+
+@xai_component
+class TwilioMakeTwiMLSayAndRecord(Component):
+    """Creates TwiML to speak text and record the response.
+
+    ##### inPorts:
+    - message: Text to speak before recording
+    - max_length: Maximum recording length in seconds
+    - timeout: Optional silence timeout in seconds
+    - transcribe: Whether to transcribe the recording
+    - transcribe_callback: Optional URL to send transcription to
+    - action_url: URL to send recording data to
+    
+    ##### outPorts:
+    - twiml: Generated TwiML XML string
+    """
+    message: InCompArg[str]
+    max_length: InCompArg[int]
+    timeout: InArg[int]
+    transcribe: InArg[bool]
+    transcribe_callback: InArg[str]
+    action_url: InCompArg[str]
+    twiml: OutArg[str]
+
+    def execute(self, ctx) -> None:
+        response = VoiceResponse()
+        response.say(self.message.value)
+        
+        record_kwargs = {
+            'maxLength': self.max_length.value,
+            'action': self.action_url.value
+        }
+        
+        if self.timeout.value:
+            record_kwargs['timeout'] = self.timeout.value
+        if self.transcribe.value:
+            record_kwargs['transcribe'] = True
+        if self.transcribe_callback.value:
+            record_kwargs['transcribeCallback'] = self.transcribe_callback.value
+            
+        response.record(**record_kwargs)
+        self.twiml.value = str(response)
