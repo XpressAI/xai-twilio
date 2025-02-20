@@ -8,11 +8,7 @@ readme = "README.md"
 repository = "https://github.com/XpressAI/xai-twilio"
 keywords = ["xircuits", "twilio", "sms", "whatsapp", "voice"]
 
-dependencies = [
-    "twilio==9.4.5"
-]
-
 # Xircuits-specific configurations
 [tool.xircuits]
 requirements_path = "requirements.txt"
-default_example_path = "examples/SendSMSExample.xircuits"
+#default_example_path = "examples/SendSMSExample.xircuits" #TODO
