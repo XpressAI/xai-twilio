@@ -1,7 +1,9 @@
 from xai_components.base import InArg, InCompArg, OutArg, Component, xai_component
-from typing import Optional, Any
+from typing import Optional, Any, List
 import os
 from twilio.rest import Client
+from twilio.twiml.voice_response import VoiceResponse, Dial
+from twilio.twiml.messaging_response import MessagingResponse
 
 def get_twilio_client(account_sid=None, auth_token=None):
     """Get Twilio client from provided credentials or environment variables.
@@ -205,3 +207,145 @@ class TwilioListMessages(Component):
             }
             for msg in messages
         ]
+
+@xai_component
+class TwilioMakeTwiMLSay(Component):
+    """Creates TwiML to speak text during a call.
+
+    ##### inPorts:
+    - message: Text to speak
+    - voice: Optional voice to use (man, woman, alice)
+    - language: Optional language code (e.g. 'en-US')
+    - loop: Optional number of times to repeat
+    
+    ##### outPorts:
+    - twiml: Generated TwiML XML string
+    """
+    message: InCompArg[str]
+    voice: InArg[str]
+    language: InArg[str]
+    loop: InArg[int]
+    twiml: OutArg[str]
+
+    def execute(self, ctx) -> None:
+        response = VoiceResponse()
+        say_kwargs = {}
+        if self.voice.value:
+            say_kwargs['voice'] = self.voice.value
+        if self.language.value:
+            say_kwargs['language'] = self.language.value
+        if self.loop.value:
+            say_kwargs['loop'] = self.loop.value
+            
+        response.say(self.message.value, **say_kwargs)
+        self.twiml.value = str(response)
+
+@xai_component
+class TwilioMakeTwiMLPlay(Component):
+    """Creates TwiML to play an audio file during a call.
+
+    ##### inPorts:
+    - url: URL of the audio file to play
+    - loop: Optional number of times to repeat
+    
+    ##### outPorts:
+    - twiml: Generated TwiML XML string
+    """
+    url: InCompArg[str]
+    loop: InArg[int]
+    twiml: OutArg[str]
+
+    def execute(self, ctx) -> None:
+        response = VoiceResponse()
+        play_kwargs = {}
+        if self.loop.value:
+            play_kwargs['loop'] = self.loop.value
+            
+        response.play(self.url.value, **play_kwargs)
+        self.twiml.value = str(response)
+
+@xai_component
+class TwilioMakeTwiMLDial(Component):
+    """Creates TwiML to dial one or more numbers.
+
+    ##### inPorts:
+    - numbers: List of phone numbers to dial
+    - timeout: Optional timeout in seconds
+    - caller_id: Optional caller ID to use
+    
+    ##### outPorts:
+    - twiml: Generated TwiML XML string
+    """
+    numbers: InCompArg[List[str]]
+    timeout: InArg[int]
+    caller_id: InArg[str]
+    twiml: OutArg[str]
+
+    def execute(self, ctx) -> None:
+        response = VoiceResponse()
+        dial_kwargs = {}
+        if self.timeout.value:
+            dial_kwargs['timeout'] = self.timeout.value
+        if self.caller_id.value:
+            dial_kwargs['caller_id'] = self.caller_id.value
+            
+        dial = Dial(**dial_kwargs)
+        for number in self.numbers.value:
+            dial.number(number)
+            
+        response.append(dial)
+        self.twiml.value = str(response)
+
+@xai_component
+class TwilioMakeTwiMLGather(Component):
+    """Creates TwiML to gather DTMF input during a call.
+
+    ##### inPorts:
+    - prompt: Text to speak before gathering input
+    - num_digits: Number of digits to gather
+    - timeout: Optional timeout in seconds
+    - action_url: URL to send gathered digits to
+    
+    ##### outPorts:
+    - twiml: Generated TwiML XML string
+    """
+    prompt: InCompArg[str]
+    num_digits: InCompArg[int]
+    timeout: InArg[int]
+    action_url: InCompArg[str]
+    twiml: OutArg[str]
+
+    def execute(self, ctx) -> None:
+        response = VoiceResponse()
+        gather_kwargs = {
+            'num_digits': self.num_digits.value,
+            'action': self.action_url.value
+        }
+        if self.timeout.value:
+            gather_kwargs['timeout'] = self.timeout.value
+            
+        gather = response.gather(**gather_kwargs)
+        gather.say(self.prompt.value)
+        self.twiml.value = str(response)
+
+@xai_component
+class TwilioMakeTwiMLMessage(Component):
+    """Creates TwiML for messaging responses.
+
+    ##### inPorts:
+    - message: Text message to send
+    - media_url: Optional URL to media to include
+    
+    ##### outPorts:
+    - twiml: Generated TwiML XML string
+    """
+    message: InCompArg[str]
+    media_url: InArg[str]
+    twiml: OutArg[str]
+
+    def execute(self, ctx) -> None:
+        response = MessagingResponse()
+        msg = response.message(self.message.value)
+        if self.media_url.value:
+            msg.media(self.media_url.value)
+        self.twiml.value = str(response)
