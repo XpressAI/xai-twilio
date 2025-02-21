@@ -1,64 +1,93 @@
-# xai-twilio
+<p align="center">
+  <a href="https://github.com/XpressAI/xircuits/tree/master/xai_components#xircuits-component-library-list">Component Libraries</a> •
+  <a href="https://github.com/XpressAI/xircuits/tree/master/project-templates#xircuits-project-templates-list">Project Templates</a>
+  <br>
+  <a href="https://xircuits.io/">Docs</a> •
+  <a href="https://xircuits.io/docs/Installation">Install</a> •
+  <a href="https://xircuits.io/docs/category/tutorials">Tutorials</a> •
+  <a href="https://xircuits.io/docs/category/developer-guide">Developer Guides</a> •
+  <a href="https://github.com/XpressAI/xircuits/blob/master/CONTRIBUTING.md">Contribute</a> •
+  <a href="https://www.xpress.ai/blog/">Blog</a> •
+  <a href="https://discord.com/invite/vgEg2ZtxCw">Discord</a>
+</p>
+
+<p align="center"><i>Xircuits Component Library for Twilio! Integrate Twilio services seamlessly into your workflows.</i></p>
+
+---
+
+### Xircuits Component Library for Twilio
 
 A Xircuits component library for integrating Twilio services into your workflows. This library provides components for SMS, WhatsApp messaging, voice calls, and TwiML generation.
 
-## Installation
+## Table of Contents
 
-Install this component library in Xircuits:
+- [Prerequisites](#prerequisites)
+- [Main Xircuits Components](#main-xircuits-components)
+- [Example Use Cases](#example-use-cases)
+- [Usage Tips](#usage-tips)
+- [Installation](#installation)
 
-```bash
-xircuits install xai-twilio
-```
 
-## Requirements
+## Prerequisites
 
-- Xircuits
-- Twilio account credentials:
-  - Account SID
-  - Auth Token
+Before you begin, you will need the following:
 
-You can provide credentials either through environment variables (`TWILIO_ACCOUNT_SID` and `TWILIO_AUTH_TOKEN`) or directly in the components.
+1. Python3.9+.
+2. Xircuits.
+3. Twilio account credentials:
+   - Account SID
+   - Auth Token
 
-## Available Components
+You can provide credentials either as environment variables (`TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`) or directly within the components.
+
+## Main Xircuits Components
 
 ### Authentication
-- **TwilioAuth**: Initialize a Twilio client with your credentials
+- **TwilioAuth**: Initializes a Twilio client using provided credentials.
+
+
 
 ### Messaging
-- **TwilioSendSMS**: Send SMS messages
-- **TwilioSendWhatsApp**: Send WhatsApp messages
-- **TwilioGetMessageStatus**: Check message delivery status
-- **TwilioListMessages**: Retrieve message history
+- **TwilioSendSMS**: Sends an SMS message.
+
+   <img src="https://github.com/user-attachments/assets/85e148b7-4826-4674-a82c-f64a74833501" alt="Image" width="200" height="150" />
+
+- **TwilioSendWhatsApp**: Sends a WhatsApp message.
+
+   <img src="https://github.com/user-attachments/assets/4ac142c2-c804-424d-b790-bd3755a8a695" alt="Image" width="200" height="100" />
+
+- **TwilioGetMessageStatus**: Retrieves the status of a sent message.
+- **TwilioListMessages**: Lists message history.
 
 ### Voice Calls
-- **TwilioMakeCall**: Initiate phone calls
-- **TwilioGetCallStatus**: Check call status
+- **TwilioMakeCall**: Initiates a voice call.
+- **TwilioGetCallStatus**: Checks the status of a call.
 
 ### TwiML Generation
-Create voice and messaging response instructions:
-- **TwilioMakeTwiMLSay**: Generate TwiML for text-to-speech
-- **TwilioMakeTwiMLPlay**: Generate TwiML to play audio files
-- **TwilioMakeTwiMLDial**: Generate TwiML for call forwarding
-- **TwilioMakeTwiMLGather**: Generate TwiML to collect user input
-- **TwilioMakeTwiMLMessage**: Generate TwiML for messaging responses
+Create TwiML response instructions for interactive voice and messaging automation:
+- **TwilioMakeTwiMLSay**: Converts text to speech.
+- **TwilioMakeTwiMLPlay**: Plays an audio file.
+- **TwilioMakeTwiMLDial**: Forwards a call.
+- **TwilioMakeTwiMLGather**: Collects user input via voice.
+- **TwilioMakeTwiMLMessage**: Creates messaging responses.
 
 ## Example Use Cases
 
-1. **Automated SMS Notifications**
-   - Use TwilioAuth and TwilioSendSMS to send automated messages
+### Automated SMS Notifications
+- Uses `TwilioAuth` and `TwilioSendSMS` to send automated text messages.
 
-2. **Interactive Voice Response (IVR)**
-   - Combine TwiML components with TwilioMakeCall for custom voice menus
+### Interactive Voice Response (IVR)
+- Combines TwiML components with `TwilioMakeCall` to create interactive voice menus.
 
-3. **WhatsApp Business Integration**
-   - Use TwilioSendWhatsApp for WhatsApp business messaging
+### WhatsApp Business Messaging
+- Use `TwilioSendWhatsApp` for WhatsApp business messaging
 
-4. **Agentic Phone Number**
-   - Combine with the Xircuits Flask component library to create an AI-powered phone number that can:
-     - Respond to incoming messages
-     - Make automated calls
-     - Handle voice interactions
-     - Process user input
+### Agentic Phone Number
+- Integrates with Xircuits Flask components to create an AI-powered phone number that can:
+  - Respond to messages.
+  - Make automated calls.
+  - Handle voice interactions.
+  - Process user input.
 
 ## Usage Tips
 
@@ -67,7 +96,20 @@ Create voice and messaging response instructions:
 - Monitor message and call status with the respective status components
 - Combine with other Xircuits libraries for advanced automation
 
-## License
+## Installation
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+To use this component library, ensure that you have an existing [Xircuits setup](https://xircuits.io/docs/main/Installation). You can then install the Twilio library using the [component library interface](https://xircuits.io/docs/component-library/installation#installation-using-the-xircuits-library-interface), or through the CLI using:
+
+```
+xircuits install twilio
+```
+
+You can also install it manually by cloning the repository:
+
+```
+# base Xircuits directory
+
+git clone https://github.com/XpressAI/xai-twilio xai_components/xai_twilio
+pip install -r xai_components/xai_twilio/requirements.txt
+```
 
